@@ -1,23 +1,43 @@
-const cors = require('cors')
-const configureCors = ()=>{//app.use(cors()); // allows all
+const cors = require('cors');
 
-    return cors(
-        //origin : which domains are allowed to access the resources
-        //which orition are allowed to acess tyour api
-        origin: (origin,callback)=>{
-            const allowedOrigins = ['http://localhost:3000'];}
-        if(!origin || allowedOrigins.indexOf(origin) !== -1){
-            callback(null,true);//giving the permission
-        }else{
-            callback(new Error('Not allowed by CORS'));//not giving the permission
+// Define a function to configure CORS
+const configureCors = () => {
+    return cors({
+        // origin: defines which domains are allowed to access your resources
+        origin: (origin, callback) => {
+            const allowedOrigins = ['http://localhost:3000']; // Allowed domains (frontend dev usually on localhost)
+
+            // If no origin or the origin is in allowed list, allow the request
+            if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+                callback(null, true); // Allow request
+            } else {
+                // If not allowed, return an error
+                callback(new Error('Not allowed by CORS')); // Deny request
+            }
         },
-        methods ;['GET', 'POST', 'PUT', 'DELETE'], //allowed methods,
-        allowedHeaders: ['Content-Type', 'Authorization'], //allowed headers
-        exposedHeaders: ['Content-Length', 'X-Requested-With'], //exposed headers
-        credenetilas: true, //allow credentials //allowing cookies to be sent ver very important
-        preflightContinue: false, //if true, the preflight request will not be sent and u controil the options meaning pre request to check if its safe or not
-        maxAge: 600 //catch ur preflight requet till 10 minutes to avoid sneidng options rewuest multiple times
-        optionsSucessstatus:204//defau;lt
-        )//new here is used a serorr is constructor fucntion sonew created a nrew object with error.message => whats insidetthe ()
-    }
-    
+
+        // Allowed HTTP methods
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+
+        // Allowed headers client can send in request
+        allowedHeaders: ['Content-Type', 'Authorization'],
+
+        // Headers exposed to the browser (client can read these)
+        exposedHeaders: ['Content-Length', 'X-Requested-With'],
+
+        // Allow sending credentials like cookies, Authorization headers, etc.
+        credentials: true,
+
+        // If true, skip automatic OPTIONS (preflight) response, and let you handle it manually
+        preflightContinue: false,
+
+        // Cache the preflight (OPTIONS) response for 600 seconds = 10 minutes
+        maxAge: 600,
+
+        // HTTP status code to return for successful OPTIONS request
+        optionsSuccessStatus: 204
+    });
+};
+
+// Export the function using named export style (can be extended with more exports later)
+module.exports = { configureCors };
