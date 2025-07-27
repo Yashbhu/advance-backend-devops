@@ -20,3 +20,18 @@ const asynchandler =(fn)=>(req,res,next) =>{
     Promise.resolve(fn(req,res,next)).catchh(next); // Step 6
 //we passed next so tht it will transfer to next middleware
 }//You give your async function a helmet (asynchandler) so if it crashes, it doesn’t bleed everywhere — instead it just calmly says “hey boss, something broke” (next(error)), and Express handles it.
+
+
+//GLOBL ERROR HANDLER
+
+const globalErrorHandler = (err, req ,res,next) =>{
+    console.err(err.stack);
+    if (err instanceof APIError){
+        return res.status(statusCode).json([
+            status:'error',
+            message: err.message,
+        ])
+    }
+}
+
+module,exports ={ APIError, asynchandler, globalErrorHandler };
